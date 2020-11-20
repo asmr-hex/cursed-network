@@ -6,16 +6,37 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "electron-is-dev": "^1.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.0",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "ws": "^7.3.1"
   },
+  "main": "public/electron.js",
+  "build": {
+    "appId": "sprout",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "npmRebuild": false
+  },
+  "homepage": "./",
+  "proxy": "http://localhost:3001",
   "scripts": {
-    "start": "react-scripts start",
+    "start": "mkdir -p logs && concurrently --prefix-colors \"green,yellow,blue\" --names \"Python,React,NodeJS\" \"nodemon --exec 'pipenv run python' server/main.py\" \"BROWSER=none react-scripts start\" \"wait-on http://localhost:3000 && electron .\"",
     "build": "react-scripts build",
+    "build-server": "echo 'write build-server script for python'",
+    "start-server": "echo 'write start-server script for python'",
+    "restart-server": "echo 'write restart-server script for python'",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "package": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder build --mac --config.extraMetadata.main=build/electron.js",
+    "prepackage": "npm run-script build && electron-rebuild"
   },
   "eslintConfig": {
     "extends": [
@@ -34,5 +55,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "electron": "^10.1.5",
+    "electron-builder": "^22.9.1",
+    "nodemon": "^2.0.6",
+    "wait-on": "^5.2.0"
   }
 }
